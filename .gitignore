@@ -33,3 +33,9 @@ Thumbs.db
 *.egg-info/
 dist/
 build/
+
+# Flask specific
+*.pyc
+instance/
+.env
+

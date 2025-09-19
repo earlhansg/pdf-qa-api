@@ -1,19 +1,24 @@
+import os
 from flask import Flask
-from config import Config
-from models import db
-from routes import all_blueprints
+from db import db
+from routes.todo_routes import todo_bp
+from dotenv import load_dotenv
+
+load_dotenv()  # Load variables from .env
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+    # Initialize database
     db.init_app(app)
+
+    # Register blueprints (routes)
+    app.register_blueprint(todo_bp, url_prefix="/todos")
 
     with app.app_context():
         db.create_all()
-
-    for bp in all_blueprints:  # now we loop over blueprint objects
-        app.register_blueprint(bp)
 
     return app
 
